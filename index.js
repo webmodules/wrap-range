@@ -40,6 +40,7 @@ function wrap (range, nodeName, doc) {
     // into the Range (which subsequently inserts into the DOM).
     node.appendChild(range.extractContents());
     range.insertNode(node);
+    range.selectNodeContents(node);
   }
 
   return node;
