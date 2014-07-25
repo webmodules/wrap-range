@@ -1,0 +1,30 @@
+{
+  "name": "wrap-range",
+  "version": "0.0.0",
+  "description": "Wraps a DOM Range instance with a new DOM element",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -gc --reporter spec --check-leaks test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/webmodules/wrap-range.git"
+  },
+  "keywords": [
+    "dom",
+    "range",
+    "surround",
+    "contents",
+    "wrap",
+    "node"
+  ],
+  "author": "Nathan Rajlich <nathan@tootallnate.net> (http://n8.io/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/webmodules/wrap-range/issues"
+  },
+  "homepage": "https://github.com/webmodules/wrap-range",
+  "dependencies": {
+    "get-document": "~0.1.1"
+  }
+}
