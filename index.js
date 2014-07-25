@@ -26,7 +26,21 @@ module.exports = wrap;
 function wrap (range, nodeName, doc) {
   if (!doc) doc = getDocument(range) || document;
   var node = doc.createElement(nodeName);
-  node.appendChild(range.extractContents());
-  range.insertNode(node);
+
+  if (range.collapsed) {
+    // for a collapsed Range, we must create a new empty TextNode, so that
+    // we can manually select it as the contents of the Range afterwards
+    node.appendChild(doc.createTextNode(''));
+    range.insertNode(node);
+    range.setStart(node.firstChild, 0);
+    range.setEnd(node.firstChild, 0);
+  } else {
+    // if there is some selected contents inside the Range, then we must
+    // "extract" the contents of the Range followed by inserting the wrapper
+    // into the Range (which subsequently inserts into the DOM).
+    node.appendChild(range.extractContents());
+    range.insertNode(node);
+  }
+
   return node;
 }
