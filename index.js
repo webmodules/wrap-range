@@ -28,12 +28,17 @@ function wrap (range, nodeName, doc) {
   var node = doc.createElement(nodeName);
 
   if (range.collapsed) {
-    // for a collapsed Range, we must create a new empty TextNode, so that
-    // we can manually select it as the contents of the Range afterwards
-    node.appendChild(doc.createTextNode(''));
+    // for a collapsed Range, we must create a new TextNode with a 0-width space
+    // character inside of it, so that we can manually select it as the contents
+    // of the Range afterwards. The 0-width space char is required otherwise the
+    // browser will simply skip over the newly created `node` when the user is
+    // typing. Selecting the empty space char forces the browser type inside of
+    // `node`.
+    var text = doc.createTextNode('\u200B');
+    node.appendChild(text);
     range.insertNode(node);
-    range.setStart(node.firstChild, 0);
-    range.setEnd(node.firstChild, 0);
+    range.setStart(text, 0);
+    range.setEnd(text, text.nodeValue.length);
   } else {
     // if there is some selected contents inside the Range, then we must
     // "extract" the contents of the Range followed by inserting the wrapper
