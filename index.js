@@ -4,6 +4,7 @@
  */
 
 var getDocument = require('get-document');
+var insertNode = require('range-insert-node');
 
 /**
  * Module exports.
@@ -36,7 +37,9 @@ function wrap (range, nodeName, doc) {
     // `node`.
     var text = doc.createTextNode('\u200B');
     node.appendChild(text);
-    range.insertNode(node);
+
+    insertNode(range, node);
+
     range.setStart(text, 0);
     range.setEnd(text, text.nodeValue.length);
   } else {
@@ -44,7 +47,9 @@ function wrap (range, nodeName, doc) {
     // "extract" the contents of the Range followed by inserting the wrapper
     // into the Range (which subsequently inserts into the DOM).
     node.appendChild(range.extractContents());
-    range.insertNode(node);
+
+    insertNode(range, node);
+
     range.selectNodeContents(node);
   }
 
