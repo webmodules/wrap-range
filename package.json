@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/webmodules/wrap-range",
   "dependencies": {
+    "debug": "~1.0.4",
     "get-document": "~0.1.1",
     "range-insert-node": "0.0.1"
   }

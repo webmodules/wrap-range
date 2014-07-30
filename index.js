@@ -5,6 +5,7 @@
 
 var getDocument = require('get-document');
 var insertNode = require('range-insert-node');
+var debug = require('debug')('wrap-range');
 
 /**
  * Module exports.
@@ -26,6 +27,8 @@ module.exports = wrap;
 
 function wrap (range, nodeName, doc) {
   if (!doc) doc = getDocument(range) || document;
+
+  debug('creating new %o element', nodeName);
   var node = doc.createElement(nodeName);
 
   if (range.collapsed) {
@@ -35,6 +38,7 @@ function wrap (range, nodeName, doc) {
     // browser will simply skip over the newly created `node` when the user is
     // typing. Selecting the empty space char forces the browser type inside of
     // `node`.
+    debug('appending 0-width space TextNode to new %o element', nodeName);
     var text = doc.createTextNode('\u200B');
     node.appendChild(text);
 
@@ -46,6 +50,7 @@ function wrap (range, nodeName, doc) {
     // if there is some selected contents inside the Range, then we must
     // "extract" the contents of the Range followed by inserting the wrapper
     // into the Range (which subsequently inserts into the DOM).
+    debug('appending Range selected contents to new %o element', nodeName);
     node.appendChild(range.extractContents());
 
     insertNode(range, node);
