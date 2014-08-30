@@ -3,8 +3,11 @@
  * Module dependencies.
  */
 
+var query = require('component-query');
 var getDocument = require('get-document');
+var prependChild = require('prepend-child');
 var insertNode = require('range-insert-node');
+var blockSel = require('block-elements').join(', ');
 var debug = require('debug')('wrap-range');
 
 /**
@@ -50,12 +53,42 @@ function wrap (range, nodeName, doc) {
     // if there is some selected contents inside the Range, then we must
     // "extract" the contents of the Range followed by inserting the wrapper
     // into the Range (which subsequently inserts into the DOM).
-    debug('appending Range selected contents to new %o element', nodeName);
-    node.appendChild(range.extractContents());
+    var fragment = range.extractContents();
+    var blocks = query.all(blockSel, fragment);
 
-    insertNode(range, node);
+    if (blocks.length) {
+      debug('Range contains %o block-level elements, transferring contents to new %o elements', blocks.length, nodeName);
+      var b;
+      for (var i = 0; i < blocks.length; i++) {
+        b = blocks[i];
+        while (b.firstChild) {
+          node.appendChild(b.firstChild);
+        }
+        b.appendChild(node);
 
-    range.selectNodeContents(node);
+        node = doc.createElement(nodeName);
+      }
+
+      // append left-most block children into *before* block node
+      var before = range.startContainer.childNodes[range.startOffset - 1];
+      b = blocks[0];
+      while (b.firstChild) {
+        before.appendChild(b.firstChild);
+      }
+
+      // prepend right-most block children into *after* block node
+      var after = range.endContainer.childNodes[range.endOffset];
+      b = blocks[blocks.length - 1];
+      while (b.lastChild) {
+        prependChild(after, b.lastChild);
+      }
+
+    } else {
+      debug('appending Range selected contents to new %o element', nodeName);
+      node.appendChild(fragment);
+      insertNode(range, node);
+      range.selectNodeContents(node);
+    }
   }
 
   return node;

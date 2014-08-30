@@ -65,4 +65,24 @@ describe('wrap-range', function () {
     assert.equal(range.commonAncestorContainer, u);
   });
 
+  it('should work with a Range that crosses block-level elements', function () {
+    div = document.createElement('div');
+    div.innerHTML = '<p>hello</p><p><i>world</i></p>';
+    document.body.appendChild(div);
+
+    var range = document.createRange();
+    range.setStart(div.firstChild.firstChild, 3);
+    range.setEnd(div.lastChild.firstChild.firstChild, 2);
+
+    // sanity check, ensure Range is properly set up
+    assert(!range.collapsed);
+
+    var strong = wrap(range, 'strong');
+    assert.equal(strong.nodeName, 'STRONG');
+    //assert.equal(strong.innerHTML, 'el<i>lo</i>');
+
+    assert.equal(div.innerHTML, '<p>hel<strong>lo</strong></p><p><strong><i>wo</i></strong><i>rld</i></p>');
+  });
+
+
 });
