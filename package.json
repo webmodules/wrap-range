@@ -4,7 +4,7 @@
   "description": "Wraps a DOM Range instance with a new DOM element",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -gc --reporter spec --check-leaks test/*.js"
+    "test": "make test"
   },
   "repository": {
     "type": "git",
