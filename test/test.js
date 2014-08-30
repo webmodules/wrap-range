@@ -23,7 +23,6 @@ describe('wrap-range', function () {
     var range = document.createRange();
     range.setStart(div.firstChild, 1);
     range.setEnd(div.firstChild, 1);
-    range.collapse();
 
     // sanity check, ensure Range is properly set up
     assert(range.collapsed);
