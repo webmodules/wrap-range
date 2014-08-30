@@ -76,11 +76,23 @@ describe('wrap-range', function () {
     // sanity check, ensure Range is properly set up
     assert(!range.collapsed);
 
-    var strong = wrap(range, 'strong');
-    assert.equal(strong.nodeName, 'STRONG');
-    //assert.equal(strong.innerHTML, 'el<i>lo</i>');
+    var strongs = wrap(range, 'strong');
 
     assert.equal(div.innerHTML, '<p>hel<strong>lo</strong></p><p><strong><i>wo</i></strong><i>rld</i></p>');
+  });
+
+  it('should work with a Range that crosses multiple block-level elements', function () {
+    div = document.createElement('div');
+    div.innerHTML = '<p><u>foo</u></p><p><strong>b</strong>ar</p><p>baz</p>';
+    document.body.appendChild(div);
+
+    var range = document.createRange();
+    range.setStart(div.firstChild.firstChild.firstChild, 2);
+    range.setEnd(div.lastChild.firstChild, 2);
+
+    var ems = wrap(range, 'em');
+
+    assert.equal(div.innerHTML, '<p><u>fo</u><em><u>o</u></em></p><p><em><strong>b</strong>ar</em></p><p><em>ba</em>z</p>');
   });
 
 

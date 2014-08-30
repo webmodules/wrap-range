@@ -58,8 +58,8 @@ function wrap (range, nodeName, doc) {
 
     if (blocks.length) {
       debug('Range contains %o block-level elements, transferring contents to new %o elements', blocks.length, nodeName);
-      var b;
-      for (var i = 0; i < blocks.length; i++) {
+      var b, i;
+      for (i = 0; i < blocks.length; i++) {
         b = blocks[i];
         while (b.firstChild) {
           node.appendChild(b.firstChild);
@@ -81,6 +81,11 @@ function wrap (range, nodeName, doc) {
       b = blocks[blocks.length - 1];
       while (b.lastChild) {
         prependChild(after, b.lastChild);
+      }
+
+      // insert any remaining block nodes _before_ the *after* block node
+      for (i = 1; i < blocks.length - 1; i++) {
+        after.parentNode.insertBefore(blocks[i], after);
       }
 
     } else {
