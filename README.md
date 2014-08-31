@@ -34,7 +34,7 @@ range.setStart(div.firstChild, 1);
 range.setEnd(div.firstChild, 8);
 
 // now we can "wrap" the Range with an element node type,
-// say STRONG in this case:
+// say U to underline in this case:
 var u = wrap(range, 'u');
 assert.equal(u.nodeName, 'U');
 assert.equal(u.innerHTML, 'ello wo');
