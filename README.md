@@ -35,9 +35,11 @@ range.setEnd(div.firstChild, 8);
 
 // now we can "wrap" the Range with an element node type,
 // say U to underline in this case:
-var u = wrap(range, 'u');
-assert.equal(u.nodeName, 'U');
-assert.equal(u.innerHTML, 'ello wo');
+var uNodes = wrap(range, 'u');
+
+assert.equal(uNodes.length, 1);
+assert.equal(uNodes[0].nodeName, 'U');
+assert.equal(uNodes[0].innerHTML, 'ello wo');
 
 assert.equal(div.innerHTML, 'h<u>ello wo</u>rld');
 ```
