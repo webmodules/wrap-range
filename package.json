@@ -1,7 +1,7 @@
 {
   "name": "wrap-range",
   "version": "0.0.3",
-  "description": "Wraps a DOM Range instance with a new DOM element",
+  "description": "Wraps a DOM Range instance with the specified DOM node name",
   "main": "index.js",
   "scripts": {
     "test": "make test"

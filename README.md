@@ -1,6 +1,6 @@
 wrap-range
 ==========
-### Wraps a DOM Range instance with a new DOM element
+### Wraps a DOM Range instance with the specified DOM node name
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/wrap-range.svg)](https://saucelabs.com/u/wrap-range)
 
