@@ -3,10 +3,12 @@
  * Module dependencies.
  */
 
-var query = require('component-query');
+var closest = require('component-closest');
+var contains = require('node-contains');
+var normalize = require('range-normalize');
 var getDocument = require('get-document');
-var prependChild = require('prepend-child');
 var insertNode = require('range-insert-node');
+var domIterator = require('dom-iterator');
 var blockSel = require('block-elements').join(', ');
 var debug = require('debug')('wrap-range');
 
@@ -24,15 +26,14 @@ module.exports = wrap;
  * @param {Range} range - DOM Range instance to "wrap"
  * @param {String} nodeName - Name of node to create. i.e. "a" to create an <a> node
  * @param {Document} [doc] - Optional `document` object to use when creating the new DOM element
- * @return {DOMElement} returns the newly created DOM element
+ * @return {Array<HTMLElement>} returns an array of the newly created DOM elements
  * @public
  */
 
 function wrap (range, nodeName, doc) {
   if (!doc) doc = getDocument(range) || document;
 
-  debug('creating new %o element', nodeName);
-  var node = doc.createElement(nodeName);
+  var nodes = [];
 
   if (range.collapsed) {
     // for a collapsed Range, we must create a new TextNode with a 0-width space
@@ -41,6 +42,10 @@ function wrap (range, nodeName, doc) {
     // browser will simply skip over the newly created `node` when the user is
     // typing. Selecting the empty space char forces the browser type inside of
     // `node`.
+    debug('creating new %o element', nodeName);
+    var node = doc.createElement(nodeName);
+    nodes.push(node);
+
     debug('appending 0-width space TextNode to new %o element', nodeName);
     var text = doc.createTextNode('\u200B');
     node.appendChild(text);
@@ -50,51 +55,65 @@ function wrap (range, nodeName, doc) {
     range.setStart(text, 0);
     range.setEnd(text, text.nodeValue.length);
   } else {
-    // if there is some selected contents inside the Range, then we must
-    // "extract" the contents of the Range followed by inserting the wrapper
-    // into the Range (which subsequently inserts into the DOM).
-    var fragment = range.extractContents();
-    var blocks = query.all(blockSel, fragment);
+    // For a Range with any selection within it, we must iterate over the TextNode
+    // instances within the Range, and figure out the "block element" boundaries.
+    // Each time a new "block" is encountered within the Range, we create a new
+    // "sub-range" and wrap it with a new `nodeName` element.
+    var next = range.startContainer;
+    var end = range.endContainer;
+    var iterator = domIterator(next).revisit(false);
+    var originalRange = range.cloneRange();
+    var workingRange = range.cloneRange();
+    var prevBlock;
+    var first = true;
 
-    if (blocks.length) {
-      debug('Range contains %o block-level elements, transferring contents to new %o elements', blocks.length, nodeName);
-      var b, i;
-      for (i = 0; i < blocks.length; i++) {
-        b = blocks[i];
-        while (b.firstChild) {
-          node.appendChild(b.firstChild);
-        }
-        b.appendChild(node);
+    function doRange () {
+      normalize(workingRange);
+      debug('wrapping Range with new %o node', nodeName);
 
-        node = doc.createElement(nodeName);
+      var node = doc.createElement(nodeName);
+      nodes.push(node);
+
+      node.appendChild(workingRange.extractContents());
+      insertNode(workingRange, node);
+
+      if (first) {
+        // the first Range that we process, we must re-set the
+        // "start boundary" on the passed in Range instance
+        range.setStartBefore(node);
+        first = false;
       }
 
-      // append left-most block children into *before* block node
-      var before = range.startContainer.childNodes[range.startOffset - 1];
-      b = blocks[0];
-      while (b.firstChild) {
-        before.appendChild(b.firstChild);
-      }
-
-      // prepend right-most block children into *after* block node
-      var after = range.endContainer.childNodes[range.endOffset];
-      b = blocks[blocks.length - 1];
-      while (b.lastChild) {
-        prependChild(after, b.lastChild);
-      }
-
-      // insert any remaining block nodes _before_ the *after* block node
-      for (i = 1; i < blocks.length - 1; i++) {
-        after.parentNode.insertBefore(blocks[i], after);
-      }
-
-    } else {
-      debug('appending Range selected contents to new %o element', nodeName);
-      node.appendChild(fragment);
-      insertNode(range, node);
-      range.selectNodeContents(node);
+      range.setEndAfter(node);
     }
+
+    while (next) {
+      var block = closest(next, blockSel, true);
+
+      if (prevBlock && prevBlock !== block) {
+        debug('found block boundary point for %o!', prevBlock);
+        workingRange.setEndAfter(prevBlock);
+
+        doRange();
+
+        // now we clone the original range again, since it has the
+        // "end boundary" set up the way to need it still. But reset the
+        // "start boundary" to point to the beginning of this new block
+        workingRange = originalRange.cloneRange();
+        workingRange.setStartBefore(block);
+      }
+
+      prevBlock = block;
+      if (contains(end, next)) break;
+      next = iterator.next(3 /* Node.TEXT_NODE */);
+    }
+
+    doRange();
+
+    // finally, normalize the passed in Range, since we've been setting
+    // it on block-level boundaries so far most likely, rather then text ones
+    normalize(range);
   }
 
-  return node;
+  return nodes;
 }

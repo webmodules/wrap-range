@@ -27,7 +27,14 @@ describe('wrap-range', function () {
     // sanity check, ensure Range is properly set up
     assert(range.collapsed);
 
-    var b = wrap(range, 'b');
+    var bNodes = wrap(range, 'b');
+
+    // test that we have the expected HTML at this point
+    assert.equal(div.innerHTML, 'H<b>\u200B</b>ello World!');
+
+    // test the return value
+    assert.equal(bNodes.length, 1);
+    var b = bNodes[0];
     assert.equal(b.nodeName, 'B');
     assert.equal(b.innerHTML, '\u200B');
 
@@ -53,15 +60,19 @@ describe('wrap-range', function () {
     assert.equal('ello', range.toString());
     assert(!range.collapsed);
 
-    var u = wrap(range, 'u');
-    assert.equal(u.nodeName, 'U');
+    var uNodes = wrap(range, 'u');
+
+    // test that we have the expected HTML at this point
+    assert.equal(div.innerHTML, '<b>H<u>el<i>lo</i></u><i> World</i>!</b>');
+
+    // test the return value
+    assert.equal(uNodes.length, 1);
+    var u = uNodes[0];
     assert.equal(u.innerHTML, 'el<i>lo</i>');
 
-    // test that the `U` DOM element is selected
+    // test that the `U` DOM element is selected in the `Range`
     assert.equal(u.parentNode, b);
-    assert.equal(range.startContainer, u);
-    assert.equal(range.endContainer, u);
-    assert.equal(range.commonAncestorContainer, u);
+    assert.equal('ello', range.toString());
   });
 
   it('should work with a Range that crosses block-level elements', function () {
@@ -75,10 +86,18 @@ describe('wrap-range', function () {
 
     // sanity check, ensure Range is properly set up
     assert(!range.collapsed);
+    assert.equal(range.toString(), 'lowo');
 
-    var strongs = wrap(range, 'strong');
+    var strongNodes = wrap(range, 'strong');
 
-    assert.equal(div.innerHTML, '<p>hel<strong>lo</strong></p><p><strong><i>wo</i></strong><i>rld</i></p>');
+    // test that we have the expected HTML at this point
+    assert.equal(div.innerHTML, '<p>hel<strong>lo</strong></p><p><i><strong>wo</strong>rld</i></p>');
+
+    // test the return value
+    assert.equal(strongNodes.length, 2);
+
+    // test that the `STRONG` DOM elements are selected in the `Range`
+    assert.equal(range.toString(), 'lowo');
   });
 
   it('should work with a Range that crosses multiple block-level elements', function () {
@@ -89,11 +108,18 @@ describe('wrap-range', function () {
     var range = document.createRange();
     range.setStart(div.firstChild.firstChild.firstChild, 2);
     range.setEnd(div.lastChild.firstChild, 2);
+    assert.equal(range.toString(), 'obarba');
 
-    var ems = wrap(range, 'em');
+    var emNodes = wrap(range, 'em');
 
-    assert.equal(div.innerHTML, '<p><u>fo</u><em><u>o</u></em></p><p><em><strong>b</strong>ar</em></p><p><em>ba</em>z</p>');
+    // test that we have the expected HTML at this point
+    assert.equal(div.innerHTML, '<p><u>fo<em>o</em></u></p><p><em><strong>b</strong>ar</em></p><p><em>ba</em>z</p>');
+
+    // test the return value
+    assert.equal(emNodes.length, 3);
+
+    // test that the `EM` DOM elements are selected in the `Range`
+    assert.equal(range.toString(), 'obarba');
   });
-
 
 });
