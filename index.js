@@ -8,6 +8,7 @@ var contains = require('node-contains');
 var normalize = require('range-normalize');
 var getDocument = require('get-document');
 var insertNode = require('range-insert-node');
+var extractContents = require('range-extract-contents');
 var domIterator = require('dom-iterator');
 var blockSel = require('block-elements').join(', ');
 var debug = require('debug')('wrap-range');
@@ -74,7 +75,7 @@ function wrap (range, nodeName, doc) {
       var node = doc.createElement(nodeName);
       nodes.push(node);
 
-      node.appendChild(workingRange.extractContents());
+      node.appendChild(extractContents(workingRange));
       insertNode(workingRange, node);
 
       if (first) {
