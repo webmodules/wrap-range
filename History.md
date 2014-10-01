@@ -1,4 +1,13 @@
 
+1.0.0 / 2014-10-01
+==================
+
+ * README++
+ * package: add "browser" as a keyword
+ * update "description"
+ * refactor to iterate over TextNode elements within the Range
+ * now returns an Array of HTMLElements, instead of a single HTMLElement
+
 0.0.3 / 2014-09-11
 ==================
 
