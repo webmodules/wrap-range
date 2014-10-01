@@ -1,4 +1,10 @@
 
+1.0.1 / 2014-10-01
+==================
+
+ * index: use "range-extract-contents" module
+ * add `.gitignore` file
+
 1.0.0 / 2014-10-01
 ==================
 
