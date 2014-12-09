@@ -34,7 +34,7 @@
     "node-contains": "~1.0.0",
     "range-extract-contents": "~1.0.0",
     "range-insert-node": "~1.0.0",
-    "range-normalize": "0.0.4"
+    "range-normalize": "~1.0.1"
   },
   "devDependencies": {
     "zuul": "~1.10.2"
