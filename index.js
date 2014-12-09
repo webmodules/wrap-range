@@ -10,7 +10,7 @@ var getDocument = require('get-document');
 var insertNode = require('range-insert-node');
 var extractContents = require('range-extract-contents');
 var domIterator = require('dom-iterator');
-var blockSel = require('block-elements').join(', ');
+var blockSel = ['li'].concat(require('block-elements')).join(', ');
 var debug = require('debug')('wrap-range');
 
 /**

@@ -122,4 +122,26 @@ describe('wrap-range', function () {
     assert.equal(range.toString(), 'obarba');
   });
 
+  it('should work with a Range that crosses multiple LI elements', function () {
+    div = document.createElement('div');
+    div.innerHTML = '<ol><li>one</li><li>two</li></ol>';
+    document.body.appendChild(div);
+
+    var range = document.createRange();
+    range.setStart(div.firstChild.firstChild.firstChild, 2);
+    range.setEnd(div.firstChild.lastChild.firstChild, 2);
+    assert.equal(range.toString(), 'etw');
+
+    var strongNodes = wrap(range, 'strong');
+
+    // test that we have the expected HTML at this point
+    assert.equal(div.innerHTML, '<ol><li>on<strong>e</strong></li><li><strong>tw</strong>o</li></ol>');
+
+    // test the return value
+    assert.equal(strongNodes.length, 2);
+
+    // test that the `STRONG` DOM elements are selected in the `Range`
+    assert.equal(range.toString(), 'etw');
+  });
+
 });
