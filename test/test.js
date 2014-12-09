@@ -14,7 +14,7 @@ describe('wrap-range', function () {
     }
   });
 
-  it('should work with a Range that is `collapsed`', function () {
+  it('should wrap a Range that is `collapsed`', function () {
     div = document.createElement('div');
     div.innerHTML = 'Hello World!';
     document.body.appendChild(div);
@@ -46,7 +46,7 @@ describe('wrap-range', function () {
     assert.equal(range.endOffset, 1);
   });
 
-  it('should work with a Range that crosses DOM boundaries', function () {
+  it('should wrap a Range that crosses DOM boundaries', function () {
     div = document.createElement('div');
     div.innerHTML = '<b>Hel<i>lo World</i>!</b>';
     document.body.appendChild(div);
@@ -75,7 +75,7 @@ describe('wrap-range', function () {
     assert.equal('ello', range.toString());
   });
 
-  it('should work with a Range that crosses block-level elements', function () {
+  it('should wrap a Range that crosses block-level elements', function () {
     div = document.createElement('div');
     div.innerHTML = '<p>hello</p><p><i>world</i></p>';
     document.body.appendChild(div);
@@ -100,7 +100,7 @@ describe('wrap-range', function () {
     assert.equal(range.toString(), 'lowo');
   });
 
-  it('should work with a Range that crosses multiple block-level elements', function () {
+  it('should wrap a Range that crosses multiple block-level elements', function () {
     div = document.createElement('div');
     div.innerHTML = '<p><u>foo</u></p><p><strong>b</strong>ar</p><p>baz</p>';
     document.body.appendChild(div);
@@ -122,7 +122,7 @@ describe('wrap-range', function () {
     assert.equal(range.toString(), 'obarba');
   });
 
-  it('should work with a Range that crosses multiple LI elements', function () {
+  it('should wrap a Range that crosses multiple LI elements', function () {
     div = document.createElement('div');
     div.innerHTML = '<ol><li>one</li><li>two</li></ol>';
     document.body.appendChild(div);
