@@ -33,7 +33,8 @@
     "range-extract-contents": "~1.0.0",
     "range-insert-node": "~1.0.0",
     "range-iterator": "~1.0.0",
-    "range-normalize": "~1.1.0"
+    "range-normalize": "~1.1.0",
+    "void-elements": "1"
   },
   "devDependencies": {
     "zuul": "~1.16.3"
