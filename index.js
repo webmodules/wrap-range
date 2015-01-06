@@ -4,13 +4,15 @@
  */
 
 var closest = require('component-closest');
-var contains = require('node-contains');
 var normalize = require('range-normalize');
 var getDocument = require('get-document');
 var insertNode = require('range-insert-node');
 var extractContents = require('range-extract-contents');
-var domIterator = require('dom-iterator');
+var RangeIterator = require('range-iterator');
+
+// create a CSS selector string from the "block elements" array
 var blockSel = ['li'].concat(require('block-elements')).join(', ');
+
 var debug = require('debug')('wrap-range');
 
 /**
@@ -59,21 +61,23 @@ function wrap (range, nodeName, doc) {
     range.setStart(text, 0);
     range.setEnd(text, text.nodeValue.length);
   } else {
-    // For a Range with any selection within it, we must iterate over the TextNode
-    // instances within the Range, and figure out the "block element" boundaries.
+    // For a Range with any selection within it, we must iterate over the
+    // TextNode instances within the Range, and figure out the parent
+    // "block element" boundaries.
     // Each time a new "block" is encountered within the Range, we create a new
     // "sub-range" and wrap it with a new `nodeName` element.
-    var next = range.startContainer;
-    var end = range.endContainer;
-    var iterator = domIterator(next).revisit(false);
-    var originalRange = range.cloneRange();
-    var workingRange = range.cloneRange();
+    var next;
     var prevBlock;
     var first = true;
+    var originalRange = range.cloneRange();
+    var workingRange = range.cloneRange();
+    var iterator = new RangeIterator(range)
+      .revisit(false)
+      .select(3 /* TEXT_NODE */);
 
     function doRange () {
       normalize(workingRange);
-      debug('wrapping Range with new %o node', nodeName);
+      debug('wrapping Range %o with new %o node', workingRange.toString(), nodeName);
 
       var node = createElement();
       nodes.push(node);
@@ -91,7 +95,7 @@ function wrap (range, nodeName, doc) {
       range.setEndAfter(node);
     }
 
-    while (next) {
+    while (next = iterator.next()) {
       var block = closest(next, blockSel, true);
 
       if (prevBlock && prevBlock !== block) {
@@ -108,8 +112,6 @@ function wrap (range, nodeName, doc) {
       }
 
       prevBlock = block;
-      if (contains(end, next)) break;
-      next = iterator.next(3 /* Node.TEXT_NODE */);
     }
 
     doRange();
