@@ -33,6 +33,9 @@ module.exports = wrap;
 
 function wrap (range, nodeName, doc) {
   if (!doc) doc = getDocument(range) || document;
+  var createElement = typeof nodeName === 'function' ? nodeName : function () {
+    return doc.createElement(nodeName);
+  };
 
   var nodes = [];
 
@@ -44,7 +47,7 @@ function wrap (range, nodeName, doc) {
     // typing. Selecting the empty space char forces the browser type inside of
     // `node`.
     debug('creating new %o element', nodeName);
-    var node = doc.createElement(nodeName);
+    var node = createElement();
     nodes.push(node);
 
     debug('appending 0-width space TextNode to new %o element', nodeName);
@@ -72,7 +75,7 @@ function wrap (range, nodeName, doc) {
       normalize(workingRange);
       debug('wrapping Range with new %o node', nodeName);
 
-      var node = doc.createElement(nodeName);
+      var node = createElement();
       nodes.push(node);
 
       node.appendChild(extractContents(workingRange));
