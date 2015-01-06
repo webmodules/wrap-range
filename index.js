@@ -13,6 +13,12 @@ var RangeIterator = require('range-iterator');
 // create a CSS selector string from the "block elements" array
 var blockSel = ['li'].concat(require('block-elements')).join(', ');
 
+// map to an Object for faster lookup times
+var voidElements = require('void-elements').reduce(function (obj, name) {
+  obj[name.toUpperCase()] = true;
+  return obj;
+}, {});
+
 var debug = require('debug')('wrap-range');
 
 /**
@@ -62,8 +68,8 @@ function wrap (range, nodeName, doc) {
     range.setEnd(text, text.nodeValue.length);
   } else {
     // For a Range with any selection within it, we must iterate over the
-    // TextNode instances within the Range, and figure out the parent
-    // "block element" boundaries.
+    // TextNode instances and "void elements" within the Range, and figure
+    // out the parent "block element" boundaries.
     // Each time a new "block" is encountered within the Range, we create a new
     // "sub-range" and wrap it with a new `nodeName` element.
     var next;
@@ -73,7 +79,10 @@ function wrap (range, nodeName, doc) {
     var workingRange = range.cloneRange();
     var iterator = new RangeIterator(range)
       .revisit(false)
-      .select(3 /* TEXT_NODE */);
+      .select(3 /* TEXT_NODE */)
+      .select(function (node) {
+        return voidElements[node.nodeName];
+      });
 
     function doRange () {
       normalize(workingRange);

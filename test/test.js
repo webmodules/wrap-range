@@ -144,4 +144,26 @@ describe('wrap-range', function () {
     assert.equal(range.toString(), 'etw');
   });
 
+  it('should wrap a Range that crosses multiple "void" elements', function () {
+    div = document.createElement('div');
+    div.innerHTML = '<p>foo</p><p><img src="#"></p><p><br></p><p>bar</p>';
+    document.body.appendChild(div);
+
+    var range = document.createRange();
+    range.setStart(div.firstChild.firstChild, 2);
+    range.setEnd(div.lastChild.firstChild, 2);
+    assert.equal(range.toString(), 'oba');
+
+    var delNodes = wrap(range, 'del');
+
+    // test that we have the expected HTML at this point
+    assert.equal(div.innerHTML, '<p>fo<del>o</del></p><p><del><img src="#"></del></p><p><del><br></del></p><p><del>ba</del>r</p>');
+
+    // test the return value
+    assert.equal(delNodes.length, 4);
+
+    // test that the `DEL` DOM elements are selected in the `Range`
+    assert.equal(range.toString(), 'oba');
+  });
+
 });
