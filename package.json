@@ -37,6 +37,6 @@
     "range-normalize": "~1.0.1"
   },
   "devDependencies": {
-    "zuul": "~1.10.2"
+    "zuul": "~1.16.3"
   }
 }
