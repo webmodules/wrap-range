@@ -1,4 +1,17 @@
 
+1.1.0 / 2015-01-26
+==================
+
+  * index: add support for "void elements"
+  * index: add support for passing in a function instead of a string `nodeName`
+  * index: use "range-iterator" instead of "dom-iterator"
+  * package: allow any "debug" v2
+  * package: update "get-document" to v1
+  * package: add "void-elements" dependency
+  * package: update "zuul" to v1.16.3
+  * package: update "range-normalize" to v1.0.1
+  * test: better test case names
+
 1.0.2 / 2014-12-09
 ==================
 
