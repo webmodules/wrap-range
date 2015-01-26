@@ -28,7 +28,7 @@
   "dependencies": {
     "block-elements": "~1.0.0",
     "component-closest": "~0.1.4",
-    "debug": "~2.0.0",
+    "debug": "2",
     "get-document": "1",
     "range-extract-contents": "~1.0.0",
     "range-insert-node": "~1.0.0",
