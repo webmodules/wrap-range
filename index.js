@@ -48,11 +48,10 @@ function wrap (range, nodeName, doc) {
     // browser will simply skip over the newly created `node` when the user is
     // typing. Selecting the empty space char forces the browser type inside of
     // `node`.
-    debug('creating new %o element', nodeName);
     var node = createElement();
     nodes.push(node);
 
-    debug('appending 0-width space TextNode to new %o element', nodeName);
+    debug('appending 0-width space TextNode to new %o element', node.nodeName);
     var text = doc.createTextNode('\u200B');
     node.appendChild(text);
 
@@ -81,11 +80,11 @@ function wrap (range, nodeName, doc) {
 
     function doRange () {
       normalize(workingRange);
-      debug('wrapping Range %o with new %o node', workingRange.toString(), nodeName);
 
       var node = createElement();
       nodes.push(node);
 
+      debug('wrapping Range %o with new %o node', workingRange.toString(), node.nodeName);
       node.appendChild(extractContents(workingRange));
       insertNode(workingRange, node);
 
