@@ -166,6 +166,37 @@ describe('wrap-range', function () {
     assert.equal(range.toString(), 'oba');
   });
 
+  it('should wrap a Range that crosses 4 P elements', function () {
+    div = document.createElement('div');
+    document.body.appendChild(div);
+
+    for (var i = 0; i < 100; i++) {
+      div.innerHTML = '<p>1</p>' +
+                      '<p>2</p>' +
+                      '<p>3</p>' +
+                      '<p>4</p>';
+
+      var range = document.createRange();
+      range.setStart(div.firstChild.firstChild, 0);
+      range.setEnd(div.lastChild.firstChild, 1);
+      assert.equal(range.toString(), '1234');
+
+      var strongNodes = wrap(range, 'strong');
+
+      // test that we have the expected HTML at this point
+      assert.equal(div.innerHTML, '<p><strong>1</strong></p>' +
+                                  '<p><strong>2</strong></p>' +
+                                  '<p><strong>3</strong></p>' +
+                                  '<p><strong>4</strong></p>');
+
+      // test the return value
+      assert.equal(strongNodes.length, 4);
+
+      // test that the `STRONG` DOM elements are selected in the `Range`
+      assert.equal(range.toString(), '1234');
+    }
+  });
+
   it('should allow a custom `createElement` function', function () {
     var count = 0;
 

@@ -40,6 +40,7 @@ function wrap (range, nodeName, doc) {
   };
 
   var nodes = [];
+  var ranges = [];
 
   if (range.collapsed) {
     // for a collapsed Range, we must create a new TextNode with a 0-width space
@@ -78,9 +79,7 @@ function wrap (range, nodeName, doc) {
         return node.childNodes.length === 0;
       });
 
-    function doRange () {
-      normalize(workingRange);
-
+    function doRange (workingRange) {
       var node = createElement();
       nodes.push(node);
 
@@ -98,6 +97,9 @@ function wrap (range, nodeName, doc) {
       range.setEndAfter(node);
     }
 
+
+    // first order of business is to collect an Array of Ranges that
+    // need to be processed
     while (next = iterator.next()) {
       var block = closest(next, blockSel, true);
 
@@ -105,7 +107,7 @@ function wrap (range, nodeName, doc) {
         debug('found block boundary point for %o!', prevBlock);
         workingRange.setEndAfter(prevBlock);
 
-        doRange();
+        ranges.push(normalize(workingRange));
 
         // now we clone the original range again, since it has the
         // "end boundary" set up the way to need it still. But reset the
@@ -116,8 +118,13 @@ function wrap (range, nodeName, doc) {
 
       prevBlock = block;
     }
+    ranges.push(normalize(workingRange));
 
-    doRange();
+
+    // process each Range instance
+    for (var i = 0; i < ranges.length; i++) {
+      doRange(ranges[i]);
+    }
 
     // finally, normalize the passed in Range, since we've been setting
     // it on block-level boundaries so far most likely, rather then text ones
