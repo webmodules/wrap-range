@@ -166,4 +166,39 @@ describe('wrap-range', function () {
     assert.equal(range.toString(), 'oba');
   });
 
+  it('should allow a custom `createElement` function', function () {
+    var count = 0;
+
+    function createElement () {
+      count++;
+
+      var a = document.createElement('a');
+      a.href = 'http://n8.io';
+      return a;
+    }
+
+    div = document.createElement('div');
+    div.innerHTML = '<p>foo</p><p>bar</p>';
+    document.body.appendChild(div);
+
+    var range = document.createRange();
+    range.setStart(div.firstChild.firstChild, 2);
+    range.setEnd(div.lastChild.firstChild, 2);
+    assert.equal(range.toString(), 'oba');
+
+    var nodes = wrap(range, createElement, document);
+
+    // test that we have the expected HTML at this point
+    assert.equal(div.innerHTML, '<p>fo<a href="http://n8.io">o</a></p>' +
+                                '<p><a href="http://n8.io">ba</a>r</p>');
+
+    // test the return value
+    assert.equal(nodes.length, 2);
+
+    // test that the `A` DOM elements are selected in the `Range`
+    assert.equal(range.toString(), 'oba');
+
+    assert.equal(2, count);
+  });
+
 });
