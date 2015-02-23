@@ -13,12 +13,6 @@ var RangeIterator = require('range-iterator');
 // create a CSS selector string from the "block elements" array
 var blockSel = ['li'].concat(require('block-elements')).join(', ');
 
-// map to an Object for faster lookup times
-var voidElements = require('void-elements').reduce(function (obj, name) {
-  obj[name.toUpperCase()] = true;
-  return obj;
-}, {});
-
 var debug = require('debug')('wrap-range');
 
 /**
@@ -79,9 +73,10 @@ function wrap (range, nodeName, doc) {
     var workingRange = range.cloneRange();
     var iterator = new RangeIterator(range)
       .revisit(false)
-      .select(3 /* TEXT_NODE */)
+      .select(3 /* text node */)
       .select(function (node) {
-        return voidElements[node.nodeName];
+        // nodes with no child nodes
+        return node.childNodes.length === 0;
       });
 
     function doRange () {
