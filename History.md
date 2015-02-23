@@ -1,4 +1,13 @@
 
+1.1.1 / 2015-02-23
+==================
+
+  * index: collect the Ranges into an Array, and process them after the RangeIterator
+  * index: make debug() calls better in case of a custom `createElement()` function
+  * test: add a `createElement()` custom function test
+  * package: allow any "zuul" v1
+  * remove "void-elements" usage
+
 1.1.0 / 2015-01-26
 ==================
 
