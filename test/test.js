@@ -1,7 +1,10 @@
 
+/**
+ * Module dependencies.
+ */
+
 var assert = require('assert');
 var wrap = require('../');
-
 
 describe('wrap-range', function () {
   var div;
