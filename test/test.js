@@ -33,19 +33,19 @@ describe('wrap-range', function () {
     var bNodes = wrap(range, 'b');
 
     // test that we have the expected HTML at this point
-    assert.equal(div.innerHTML, 'H<b>\u200B</b>ello World!');
+    assert.equal(div.innerHTML, 'H<b><span class="zwsp">\u200B</span></b>ello World!');
 
     // test the return value
     assert.equal(bNodes.length, 1);
     var b = bNodes[0];
     assert.equal(b.nodeName, 'B');
-    assert.equal(b.innerHTML, '\u200B');
+    assert.equal(b.innerHTML, '<span class="zwsp">\u200B</span>');
 
     // test that the inner TextNode is selected in the `Range`
     assert.equal(b.parentNode, div);
-    assert.equal(range.startContainer.parentNode, b);
-    assert.equal(range.startOffset, 0);
-    assert.equal(range.endContainer.parentNode, b);
+    assert.equal(range.startContainer.parentNode.parentNode, b, 'startContainer parent parent is not B node');
+    assert.equal(range.startOffset, 1);
+    assert.equal(range.endContainer.parentNode.parentNode, b, 'endContainer parent parent is not B node');
     assert.equal(range.endOffset, 1);
   });
 
