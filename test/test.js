@@ -31,21 +31,57 @@ describe('wrap-range', function () {
     assert(range.collapsed);
 
     var bNodes = wrap(range, 'b');
+    assert.equal(bNodes.length, 1);
 
     // test that we have the expected HTML at this point
     assert.equal(div.innerHTML, 'H<b><span class="zwsp">\u200B</span></b>ello World!');
 
     // test the return value
-    assert.equal(bNodes.length, 1);
     var b = bNodes[0];
     assert.equal(b.nodeName, 'B');
     assert.equal(b.innerHTML, '<span class="zwsp">\u200B</span>');
 
     // test that the inner TextNode is selected in the `Range`
+    assert(range.collapsed);
     assert.equal(b.parentNode, div);
     assert.equal(range.startContainer.parentNode.parentNode, b, 'startContainer parent parent is not B node');
     assert.equal(range.startOffset, 1);
     assert.equal(range.endContainer.parentNode.parentNode, b, 'endContainer parent parent is not B node');
+    assert.equal(range.endOffset, 1);
+  });
+
+  it('should wrap a Range that is `collapsed` twice', function () {
+    div = document.createElement('div');
+    div.innerHTML = 'Hello World!';
+    document.body.appendChild(div);
+
+    // set up "collapsed" Range
+    var range = document.createRange();
+    range.setStart(div.firstChild, 1);
+    range.setEnd(div.firstChild, 1);
+
+    // sanity check, ensure Range is properly set up
+    assert(range.collapsed);
+
+    var bNodes = wrap(range, 'b');
+    assert.equal(bNodes.length, 1);
+
+    // test that we have the expected HTML at this point
+    assert.equal(div.innerHTML, 'H<b><span class="zwsp">\u200B</span></b>ello World!');
+
+    var iNodes = wrap(range, 'i');
+    assert.equal(iNodes.length, 1);
+
+    // test that we have the expected HTML at this point
+    assert.equal(div.innerHTML, 'H<b><i><span class="zwsp">\u200B</span></i></b>ello World!');
+
+    // test that the inner TextNode is selected in the `Range`
+    assert(range.collapsed);
+    assert.equal(range.startContainer.parentNode.nodeName, 'SPAN');
+    assert.equal(range.startContainer.parentNode.className, 'zwsp');
+    assert.equal(range.startContainer.parentNode.parentNode.nodeName, 'I');
+    assert.equal(range.startContainer.parentNode.parentNode.parentNode.nodeName, 'B');
+    assert.equal(range.startOffset, 1);
     assert.equal(range.endOffset, 1);
   });
 

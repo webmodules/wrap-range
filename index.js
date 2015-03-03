@@ -52,11 +52,20 @@ function wrap (range, nodeName, doc) {
     var node = createElement();
     nodes.push(node);
 
+    // attempt to find an existing `.zwsp` SPAN parent of the cursor.
+    // if we find one, then re-use that, otherwise create one from scratch.
     debug('appending 0-width space TextNode to new %o element', node.nodeName);
-    var span = doc.createElement('span');
-    span.className = 'zwsp';
-    var text = doc.createTextNode('\u200B');
-    span.appendChild(text);
+    var span = closest(range.endContainer, '.zwsp', true, doc);
+    var text;
+    if (span) {
+      text = span.firstChild;
+    } else {
+      span = doc.createElement('span');
+      span.className = 'zwsp';
+      text = doc.createTextNode('\u200B');
+      span.appendChild(text);
+    }
+
     node.appendChild(span);
 
     insertNode(range, node);
