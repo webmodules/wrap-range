@@ -53,13 +53,17 @@ function wrap (range, nodeName, doc) {
     nodes.push(node);
 
     debug('appending 0-width space TextNode to new %o element', node.nodeName);
+    var span = doc.createElement('span');
+    span.className = 'zwsp';
     var text = doc.createTextNode('\u200B');
-    node.appendChild(text);
+    span.appendChild(text);
+    node.appendChild(span);
 
     insertNode(range, node);
 
-    range.setStart(text, 0);
-    range.setEnd(text, text.nodeValue.length);
+    var l = text.nodeValue.length;
+    range.setStart(text, l);
+    range.setEnd(text, l);
   } else {
     // For a Range with any selection within it, we must iterate over the
     // TextNode instances and "void elements" within the Range, and figure
