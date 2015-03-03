@@ -1,4 +1,12 @@
 
+2.0.0 / 2015-03-03
+==================
+
+  * index: insert the 0-width space into a `span.zwsp` node
+  * package: allow any "zuul" v2
+  * test: add comment
+  * test: fix test case
+
 1.1.1 / 2015-02-23
 ==================
 
