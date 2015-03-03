@@ -1,6 +1,6 @@
 {
   "name": "wrap-range",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Wraps a DOM Range instance with the specified DOM node name",
   "main": "index.js",
   "scripts": {
