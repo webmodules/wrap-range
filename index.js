@@ -84,13 +84,10 @@ function wrap (range, nodeName, doc) {
     var first = true;
     var originalRange = range.cloneRange();
     var workingRange = range.cloneRange();
-    var iterator = new RangeIterator(range)
-      .revisit(false)
-      .select(3 /* text node */)
-      .select(function (node) {
-        // nodes with no child nodes
-        return node.childNodes.length === 0;
-      });
+    var iterator = RangeIterator(range, function (node) {
+      // nodes with no child nodes
+      return node.childNodes.length === 0;
+    });
 
     function doRange (workingRange) {
       var node = createElement();
@@ -113,8 +110,8 @@ function wrap (range, nodeName, doc) {
 
     // first order of business is to collect an Array of Ranges that
     // need to be processed
-    while (next = iterator.next()) {
-      var block = closest(next, blockSel, true);
+    while (!(next = iterator.next()).done) {
+      var block = closest(next.value, blockSel, true);
 
       if (prevBlock && prevBlock !== block) {
         debug('found block boundary point for %o!', prevBlock);
