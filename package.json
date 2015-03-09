@@ -32,7 +32,7 @@
     "get-document": "1",
     "range-extract-contents": "~1.0.0",
     "range-insert-node": "~1.0.0",
-    "range-iterator": "~1.0.0",
+    "range-iterator": "~2.0.0",
     "range-normalize": "~1.1.1"
   },
   "devDependencies": {
