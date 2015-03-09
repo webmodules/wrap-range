@@ -1,4 +1,11 @@
 
+2.0.2 / 2015-03-09
+==================
+
+  * update to RangeIterator v2 API
+  * package: update "range-iterator" to v2.0.0
+  * package: update "range-normalize" to v1.1.1
+
 2.0.1 / 2015-03-03
 ==================
 
