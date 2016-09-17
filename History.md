@@ -1,3 +1,7 @@
+2.0.3 / 2016-09-17
+==================
+
+* [[`95e0d49e21`](https://github.com/webmodules/wrap-range/commit/95e0d49e21)] - **package**: update deps (Nathan Rajlich)
 
 2.0.2 / 2015-03-09
 ==================
