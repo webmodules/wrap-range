@@ -26,8 +26,8 @@
   },
   "homepage": "https://github.com/webmodules/wrap-range",
   "dependencies": {
-    "block-elements": "~1.0.0",
-    "component-closest": "~0.1.4",
+    "block-elements": "~1.1.0",
+    "component-closest": "~1.0.1",
     "debug": "2",
     "get-document": "1",
     "range-extract-contents": "~1.0.0",
